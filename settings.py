@@ -1,0 +1,193 @@
+import pygame
+
+# Sprite Groups
+dinos = pygame.sprite.Group()
+mushrooms = pygame.sprite.Group()
+
+# Global Variables 
+size = WIDTH, HEIGHT = 1024, 768
+TS = 32
+dino_size = D_WIDTH, D_HEIGHT = TS, TS
+TITLE = 'DINO MAZE'
+SCORE = 0
+bounds = []
+minutes = 1
+seconds = 0
+milliseconds = 0
+
+# Colors
+black = pygame.Color(0, 0, 0)
+white = pygame.Color(255, 225, 225)
+red = pygame.Color(255, 0, 0)
+green = pygame.Color(0, 255, 0)
+blue = pygame.Color(0, 0, 255)
+
+# For the while loops
+instruct = True
+credit = True
+intro = True
+
+########################################### Backgounds Images
+background = pygame.image.load('sprites/background/backg.png')
+background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+background_rect = background.get_rect(topleft=(0,0))
+
+########################################### Game Music
+pygame.mixer.init()
+pygame.mixer.music.load('music_and_sounds/intro.wav')
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
+
+########################################### Game Sound FX
+collect = pygame.mixer.Sound('music_and_sounds/collect.wav')
+collect.set_volume(0.2)
+
+button = pygame.mixer.Sound('music_and_sounds/button.wav')
+button.set_volume(0.2)
+
+walk = pygame.mixer.Sound('music_and_sounds/jump.wav')
+walk.set_volume(0.05)
+
+gamewin = pygame.mixer.Sound('music_and_sounds/gamewin.wav')
+gamewin.set_volume(0.2)
+
+gameover = pygame.mixer.Sound('music_and_sounds/gameover.wav')
+gameover.set_volume(0.2)
+
+########################################### Dino player Sprite
+dinoimg = pygame.image.load('sprites/dino/dino.png')
+dinoimg = pygame.transform.scale(dinoimg, (dino_size))
+
+########################################### Mushroom Sprites
+mush1 = pygame.image.load('sprites/dino/mushroom1.png')
+mush1 = pygame.transform.scale(mush1, (dino_size))
+
+###########################################  GameOver function
+lost = pygame.image.load('sprites/GO.png')
+lost_rect = lost.get_rect(center=(WIDTH/2, HEIGHT/2))
+
+###########################################  Winner function
+winnerp = pygame.image.load('sprites/winner.png')
+winnerp_rect = winnerp.get_rect(center=(WIDTH/2, HEIGHT/2))
+
+###########################################  Game Intro Page Images
+menutitle = pygame.image.load('sprites/dinomaze.png')
+menutitle_rect = menutitle.get_rect(midtop=(WIDTH/2, TS*6))
+# menutitle = pygame.transform.scale(menutitle, (WIDTH, HEIGHT))
+
+pressSB = pygame.image.load('sprites/pressSB.png')
+pressSB_rect = pressSB.get_rect(center=(WIDTH/2, TS*15))
+
+########################################## Instruction Page Images 
+instructions = pygame.image.load('sprites/gameinst.png')
+instructions_rect = instructions.get_rect(midtop=(WIDTH/2, 0))
+
+rules = pygame.image.load('sprites/keys/help.png')
+rules_rect = rules.get_rect(midtop=(WIDTH/2, TS*4))
+
+move = pygame.image.load('sprites/keys/move.png')
+move_rect = move.get_rect(center=(WIDTH/2, HEIGHT/2))
+
+arrows = pygame.image.load('sprites/keys/arrows.png')
+arrows = pygame.transform.scale(arrows, (225, 150))
+arrows_rect = arrows.get_rect(midright=(WIDTH/2, HEIGHT/2+TS*3))
+
+wasd = pygame.image.load('sprites/keys/wasd.png')
+wasd = pygame.transform.scale(wasd, (225, 150))
+wasd_rect = wasd.get_rect(midleft=(WIDTH/2, HEIGHT/2+TS*3))
+
+enterkey = pygame.image.load('sprites/keys/enter.png')
+enterkey = pygame.transform.scale(enterkey, (250, 200))
+enterkey_rect = enterkey.get_rect(topleft=(WIDTH/2+TS*4, TS*16))
+
+startenter = pygame.image.load('sprites/keys/enterStart.png')
+startenter_rect = startenter.get_rect(topleft=(TS*2, TS*19))
+
+########################################## LEVEL for player to beat
+# Holds the maze layout in a list of strings.
+maze = [
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+    "B  BBB BB BBBM   B   B         B",
+    "B    B    BBBBB BB B B BBBBBBB B",
+    "BBBB B B  B   B BB B B   B M B B",
+    "B      B    B B  B B B B   B   B",
+    "B B BB B  BBBBBB   B B BBBBBBB B",
+    "B B  B BB    B BBBBB B         B",
+    "BBB  BBBBBBB B       B   BBB   B",
+    "B BB     B     BB  BBB  BBBBB  B",
+    "B    BB BB  BBBBB       B  MB  B",
+    "B   BB   BB    BB BBBB BBABBBBBB",
+    "B  BB     BB   B  B  B BB B  B B",
+    "BMBB  B B  BB  B  B  B    BB B B",
+    "BBB         BB B     B BB  B  MB",
+    "BB  B  B  B  B B  B  B BB  B BBB",
+    "BBB         BB B BB  BBBBBBB   B",
+    "B BBB BBBBBBB  B B  BB         B",
+    "B   B     B    B B  B     BBBBBB",
+    "B B B     B BB B BB BBBABBB    B",
+    "B B B     B BB B  B       B BB B",
+    "B B BB   BB BB B  B    BB B MB B",
+    "B B  B BBB  BB B  BBB BB  BBBB B",
+    "BMBB   BM   BB         B       F",
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+]
+########################################### Unused labels
+##### Game Over
+# GO = 'GAMEOVER'
+# GO = pygame.font.SysFont('impact', 100)
+# GOsurf = GO.render(GO, True, red)
+# GO_rect = GOsurf.get_rect(midbottom=(WIDTH/2, HEIGHT/2))
+# screen.blit(GOsurf, GO_rect)
+
+##### Winner
+# WIN = 'YOU WIN!'
+# Win = pygame.font.SysFont('impact', 100)
+# Wsurf = Win.render(WIN, True, green)
+# Win_rect = Wsurf.get_rect(midbottom=(WIDTH/2, HEIGHT/2))
+# screen.blit(Wsurf, Win_rect)
+
+#### Instruction Page
+# START = 'DINO MAZE'
+# Start = pygame.font.SysFont('impact', 120)
+# Ssurf = Start.render(START, True, blue)
+# Srect_rect = Ssurf.get_rect(center = (WIDTH/2, HEIGHT/2))
+# screen.blit(Ssurf, Srect_rect)
+
+# SPACE = 'PRESS SPACEBAR TO CONTINUE'
+# Start = pygame.font.SysFont('impact', 40)
+# Ssurf = Start.render(SPACE, True, blue)
+# Srect_rect = Ssurf.get_rect(center = (WIDTH/2, HEIGHT/2+192))
+# screen.blit(Ssurf, Srect_rect)
+
+########################################### Unused Functions
+# To help draw on screen
+# TILESIZE = 32
+# GRIDWIDTH = WIDTH / TILESIZE
+# GRIDHEIGHT = HEIGHT / TILESIZE
+# lightgrey = pygame.Color(100, 100, 100)
+# darkgrey = pygame.Color(40, 40, 40)
+# def draw_grid():
+#     for x in range(0, WIDTH, TILESIZE):
+#         pygame.draw.line(screen, lightgrey, (x, 0), (x, HEIGHT))
+#     for y in range(0, HEIGHT, TILESIZE):
+#         pygame.draw.line(screen, lightgrey, (0, y), (WIDTH, y))
+
+########################################### Trying to make an easter egg (unsuccessful)
+# def credits(credit):
+#     while credit:
+#         for event in pygame.event.get():
+#             if event.type == pygame.KEYDOWN:
+#                 if event.key == pygame.K_ESCAPE:
+#                     credit = False
+#                     pygame.quit()
+#             if event.type == pygame.QUIT:
+#                 credit = False
+#                 pygame.quit()
+
+#     screen.fill(black)
+#     cassandra = pygame.image.load('sprites/cassandra.png')
+#     cassandra_rect = cassandra.get_rect(center=(WIDTH/2, HEIGHT/2))
+#     screen.blit(cassandra, cassandra_rect)
+#     pygame.display.flip()
+#     time.sleep(5)
+#     pygame.quit()
