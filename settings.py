@@ -1,15 +1,19 @@
+import random
 import pygame
 
 # Sprite Groups
 dinos = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
 mushrooms = pygame.sprite.Group()
 
+
 # Global Variables 
-size = WIDTH, HEIGHT = 1024, 768
+size = WIDTH, HEIGHT = 1056, 800
 TS = 32
 dino_size = D_WIDTH, D_HEIGHT = TS, TS
 TITLE = 'DINO MAZE'
 SCORE = 0
+SCOREP2 = 0
 bounds = []
 minutes = 1
 seconds = 0
@@ -35,8 +39,10 @@ background_rect = background.get_rect(topleft=(0,0))
 ########################################### Game Music
 pygame.mixer.init()
 pygame.mixer.music.load('music_and_sounds/intro.wav')
-pygame.mixer.music.set_volume(0.5)
-pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0)
+#0.5
+pygame.mixer.music.play(0)
+#-1
 
 ########################################### Game Sound FX
 collect = pygame.mixer.Sound('music_and_sounds/collect.wav')
@@ -62,50 +68,137 @@ dinoimg = pygame.transform.scale(dinoimg, (dino_size))
 mush1 = pygame.image.load('sprites/dino/mushroom1.png')
 mush1 = pygame.transform.scale(mush1, (dino_size))
 
+########################################### Computer Player Sprites
+enemy = pygame.image.load('sprites/dino/enemy.png')
+enemy = pygame.transform.scale(enemy, (dino_size))
+
 ###########################################  GameOver function
 lost = pygame.image.load('sprites/GO.png')
-lost_rect = lost.get_rect(center=(WIDTH/2, HEIGHT/2))
+lost_rect = lost.get_rect(center=(WIDTH//2, HEIGHT//2))
 
 ###########################################  Winner function
 winnerp = pygame.image.load('sprites/winner.png')
-winnerp_rect = winnerp.get_rect(center=(WIDTH/2, HEIGHT/2))
+winnerp_rect = winnerp.get_rect(center=(WIDTH//2, HEIGHT//2))
 
 ###########################################  Game Intro Page Images
 menutitle = pygame.image.load('sprites/dinomaze.png')
-menutitle_rect = menutitle.get_rect(midtop=(WIDTH/2, TS*6))
+menutitle_rect = menutitle.get_rect(midtop=(WIDTH//2, TS*6))
 # menutitle = pygame.transform.scale(menutitle, (WIDTH, HEIGHT))
 
 pressSB = pygame.image.load('sprites/pressSB.png')
-pressSB_rect = pressSB.get_rect(center=(WIDTH/2, TS*15))
+pressSB_rect = pressSB.get_rect(center=(WIDTH//2, TS*15))
 
 ########################################## Instruction Page Images 
 instructions = pygame.image.load('sprites/gameinst.png')
-instructions_rect = instructions.get_rect(midtop=(WIDTH/2, 0))
+instructions_rect = instructions.get_rect(midtop=(WIDTH//2, 0))
 
 rules = pygame.image.load('sprites/keys/help.png')
-rules_rect = rules.get_rect(midtop=(WIDTH/2, TS*4))
+rules_rect = rules.get_rect(midtop=(WIDTH//2, TS*4))
 
 move = pygame.image.load('sprites/keys/move.png')
-move_rect = move.get_rect(center=(WIDTH/2, HEIGHT/2))
+move_rect = move.get_rect(center=(WIDTH//2, HEIGHT//2))
 
 arrows = pygame.image.load('sprites/keys/arrows.png')
 arrows = pygame.transform.scale(arrows, (225, 150))
-arrows_rect = arrows.get_rect(midright=(WIDTH/2, HEIGHT/2+TS*3))
+arrows_rect = arrows.get_rect(midright=(WIDTH//2, HEIGHT//2+TS*3))
 
 wasd = pygame.image.load('sprites/keys/wasd.png')
 wasd = pygame.transform.scale(wasd, (225, 150))
-wasd_rect = wasd.get_rect(midleft=(WIDTH/2, HEIGHT/2+TS*3))
+wasd_rect = wasd.get_rect(midleft=(WIDTH//2, HEIGHT//2+TS*3))
 
 enterkey = pygame.image.load('sprites/keys/enter.png')
 enterkey = pygame.transform.scale(enterkey, (250, 200))
-enterkey_rect = enterkey.get_rect(topleft=(WIDTH/2+TS*4, TS*16))
+enterkey_rect = enterkey.get_rect(topleft=(WIDTH//2+TS*4, TS*16))
 
 startenter = pygame.image.load('sprites/keys/enterStart.png')
 startenter_rect = startenter.get_rect(topleft=(TS*2, TS*19))
 
 ########################################## LEVEL for player to beat
-# Holds the maze layout in a list of strings.
-maze = [
+# Depth-First-Search Maze Algorithm
+# Creates Random mazes 
+# Creates a board filled all B's
+def generateFilledMaze(rows, cols):
+    maze = []
+    for row in range(0, rows):
+        next_row = []
+        for col in range(0, cols):
+            next_row.append("B")
+        maze.append(next_row)
+    return maze
+
+def createMaze(maze):    
+    start_row = (random.randint(0, (len(maze) - 3)//2)) * 2 + 1
+    start_col = (random.randint(0, (len(maze[start_row]) - 3)//2)) * 2 + 1
+    maze[start_row][start_col] = " "
+    createMazeHelper(maze, start_row, start_col)
+
+    for row in range(1, len(maze) -1):
+        for col in range(1, len(maze[row])-1):
+            if maze[row][col] == " ":
+                walls = 0
+                if maze[row +1][col] == 'B':
+                    walls += 1
+                if maze[row -1][col] == 'B':
+                    walls += 1
+                if maze[row][col +1] == 'B':
+                    walls += 1
+                if maze[row][col-1]  == 'B':
+                    walls += 1
+                if walls == 3:
+                    maze[row][col] = "M"
+
+
+
+#Helper function 
+def createMazeHelper(maze, r, c):
+    # 0 is North, 1 is East, 2 is South, 3 is West
+    dirs = [0, 1, 2, 3]
+    random.shuffle(dirs)
+    for dir in dirs:
+        next_r = r
+        next_c = c
+        if dir == 0:
+            next_r -= 2
+        if dir == 1:
+            next_c += 2
+        if dir == 2:
+            next_r += 2
+        if dir == 3:
+            next_c -= 2
+
+        if next_r > 0 and next_r < len(maze) - 1 and next_c > 0 and next_c < len(maze[next_r]):
+            if maze[next_r][next_c] == 'B':
+                maze[next_r][next_c] = " "
+                maze[(r+next_r)//2][(c+next_c)//2] = " "
+                createMazeHelper(maze, next_r, next_c)
+
+def printMaze(maze):
+    for row in range(0, len(maze)):
+        print(maze[row])
+
+def finalizeMaze(source_maze):
+    rad = (random.randint(0, (len(source_maze) - 3)//2) * 2 + 1)
+    if source_maze[len(source_maze)-1][rad] == " ":
+        source_maze[len(source_maze)][rad] = 'F'
+    else:
+        source_maze[1][32] = 'F'
+    # print (len(source_maze))
+
+    final_maze = []
+    for row in range(0, len(source_maze)):
+        next_row = ''
+        for col in range(0, len(source_maze[row])):
+            next_row += source_maze[row][col]
+        final_maze.append(next_row)
+    return final_maze
+
+#creating the random maze
+maze = generateFilledMaze(25, 33)
+createMaze(maze)
+maze = finalizeMaze(maze)
+# printMaze(maze)
+
+"""maze = [
     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
     "B  BBB BB BBBM   B   B         B",
     "B    B    BBBBB BB B B BBBBBBB B",
@@ -130,33 +223,35 @@ maze = [
     "B B  B BBB  BB B  BBB BB  BBBB B",
     "BMBB   BM   BB         B       F",
     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
-]
+]"""
 ########################################### Unused labels
+#old size HEIGHT, WIDTH = 1024, 768
+
 ##### Game Over
 # GO = 'GAMEOVER'
 # GO = pygame.font.SysFont('impact', 100)
 # GOsurf = GO.render(GO, True, red)
-# GO_rect = GOsurf.get_rect(midbottom=(WIDTH/2, HEIGHT/2))
+# GO_rect = GOsurf.get_rect(midbottom=(WIDTH//2, HEIGHT//2))
 # screen.blit(GOsurf, GO_rect)
 
 ##### Winner
 # WIN = 'YOU WIN!'
 # Win = pygame.font.SysFont('impact', 100)
 # Wsurf = Win.render(WIN, True, green)
-# Win_rect = Wsurf.get_rect(midbottom=(WIDTH/2, HEIGHT/2))
+# Win_rect = Wsurf.get_rect(midbottom=(WIDTH//2, HEIGHT//2))
 # screen.blit(Wsurf, Win_rect)
 
 #### Instruction Page
 # START = 'DINO MAZE'
 # Start = pygame.font.SysFont('impact', 120)
 # Ssurf = Start.render(START, True, blue)
-# Srect_rect = Ssurf.get_rect(center = (WIDTH/2, HEIGHT/2))
+# Srect_rect = Ssurf.get_rect(center = (WIDTH//2, HEIGHT//2))
 # screen.blit(Ssurf, Srect_rect)
 
 # SPACE = 'PRESS SPACEBAR TO CONTINUE'
 # Start = pygame.font.SysFont('impact', 40)
 # Ssurf = Start.render(SPACE, True, blue)
-# Srect_rect = Ssurf.get_rect(center = (WIDTH/2, HEIGHT/2+192))
+# Srect_rect = Ssurf.get_rect(center = (WIDTH//2, HEIGHT//2+192))
 # screen.blit(Ssurf, Srect_rect)
 
 ########################################### Unused Functions
@@ -186,7 +281,7 @@ maze = [
 
 #     screen.fill(black)
 #     cassandra = pygame.image.load('sprites/cassandra.png')
-#     cassandra_rect = cassandra.get_rect(center=(WIDTH/2, HEIGHT/2))
+#     cassandra_rect = cassandra.get_rect(center=(WIDTH//2, HEIGHT//2))
 #     screen.blit(cassandra, cassandra_rect)
 #     pygame.display.flip()
 #     time.sleep(5)
