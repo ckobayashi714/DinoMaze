@@ -46,19 +46,21 @@ pygame.mixer.music.play(0)
 
 ########################################### Game Sound FX
 collect = pygame.mixer.Sound('music_and_sounds/collect.wav')
-collect.set_volume(0.2)
+collect.set_volume(0)
+#0.2 all
 
 button = pygame.mixer.Sound('music_and_sounds/button.wav')
-button.set_volume(0.2)
+button.set_volume(0)
 
 walk = pygame.mixer.Sound('music_and_sounds/jump.wav')
-walk.set_volume(0.05)
+walk.set_volume(0)
+#0.05
 
 gamewin = pygame.mixer.Sound('music_and_sounds/gamewin.wav')
-gamewin.set_volume(0.2)
+gamewin.set_volume(0)
 
 gameover = pygame.mixer.Sound('music_and_sounds/gameover.wav')
-gameover.set_volume(0.2)
+gameover.set_volume(0)
 
 ########################################### Dino player Sprite
 dinoimg = pygame.image.load('sprites/dino/dino.png')

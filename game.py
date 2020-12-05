@@ -55,7 +55,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.enemy_row = pos[0]
         self.enemy_col = pos[1]
-        self.enemy_speed = TS
+        # self.enemy_speed = TS
         #pygame.key.set_repeat(200, TS)
 
     # draw the player on the screen
@@ -71,8 +71,8 @@ class Enemy(pygame.sprite.Sprite):
 
     #Enemy can't walk through walls this prevents him from proceeding if there a barrier
     def move_SA(self, enemy_row, enemy_col):
-        self.rect.x += enemy_row * TS
-        self.rect.y += enemy_col * TS
+        self.rect.x += enemy_row
+        self.rect.y += enemy_col
         for bound in bounds:
             if self.rect.colliderect(bound.rect):
                 # print('Hit a wall!')
@@ -103,7 +103,7 @@ class Wall():
 # creates the player
 player = Dino((TS, TS))
 dinos.add(player)
-playerPC = Enemy((WIDTH-(TS*2), TS))
+playerPC = Enemy((TS,TS))
 enemies.add(playerPC)
 
 # creates the maze
@@ -277,23 +277,24 @@ def gameloop():
         if 1 == 1:
             der = random.randint(0, 3)
             # print(der, playerPC.enemy_row, playerPC.enemy_col, len(maze)-2, len(maze[playerPC.enemy_col])-2)
-            # print(der, playerPC.enemy_row, playerPC.enemy_col)
+            print(der, playerPC.enemy_row, playerPC.enemy_col)
 
-            if der == 0 and playerPC.enemy_row > 1:
-                # walk.play()
-                playerPC.move(-1, 0)
-            if der == 1 and playerPC.enemy_col < len(maze) - 1:
-                # walk.play()
+            if der == 0 and playerPC.enemy_row == TS:
+                # walk.play()up
                 playerPC.move(0, 1)
+            if der == 1 and playerPC.enemy_col == TS:
+                # walk.play()left
+                playerPC.move(-1, 0)
 
             # if der == 2 and playerPC.enemy_row < len(maze[playerPC.enemy_col]) - 2:
-            if der == 2 and playerPC.enemy_row < len(maze) - 2:
-                # walk.play()
-                playerPC.move(1, 0)
-
-            if der == 3 and playerPC.enemy_col > 1:
-                # walk.play()
+            if der == 2 and playerPC.enemy_row == TS:
+                # walk.play()down
                 playerPC.move(0, -1)
+
+            if der == 3 and playerPC.enemy_col ==  TS:
+                # walk.play()right
+                playerPC.move(1, 0)
+            
 
             
         for event in pygame.event.get():            
