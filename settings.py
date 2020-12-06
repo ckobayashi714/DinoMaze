@@ -15,7 +15,7 @@ TITLE = 'DINO MAZE'
 SCORE = 0
 SCOREP2 = 0
 bounds = []
-minutes = 1
+minutes = 5
 seconds = 0
 milliseconds = 0
 
@@ -23,15 +23,18 @@ milliseconds = 0
 black = pygame.Color(0, 0, 0)
 white = pygame.Color(255, 225, 225)
 red = pygame.Color(255, 0, 0)
-green = pygame.Color(0, 255, 0)
+yellow = pygame.Color(255, 255, 0)
 blue = pygame.Color(0, 0, 255)
+green = pygame.Color(0, 255, 0)
+purple = pygame.Color(143, 0, 255)
+
 
 # For the while loops
 instruct = True
 credit = True
 intro = True
 
-########################################### Backgounds Images
+########################################### Background Images
 background = pygame.image.load('sprites/background/backg.png')
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 background_rect = background.get_rect(topleft=(0,0))
@@ -66,11 +69,11 @@ gameover.set_volume(0)
 dinoimg = pygame.image.load('sprites/dino/dino.png')
 dinoimg = pygame.transform.scale(dinoimg, (dino_size))
 
-########################################### Mushroom Sprites
+########################################### Mushroom Sprite
 mush1 = pygame.image.load('sprites/dino/mushroom1.png')
 mush1 = pygame.transform.scale(mush1, (dino_size))
 
-########################################### Computer Player Sprites
+########################################### Computer Player Sprite
 enemy = pygame.image.load('sprites/dino/enemy.png')
 enemy = pygame.transform.scale(enemy, (dino_size))
 
@@ -115,7 +118,7 @@ enterkey_rect = enterkey.get_rect(topleft=(WIDTH//2+TS*4, TS*16))
 startenter = pygame.image.load('sprites/keys/enterStart.png')
 startenter_rect = startenter.get_rect(topleft=(TS*2, TS*19))
 
-########################################## LEVEL for player to beat
+########################################## Maze for player to beat
 # Depth-First-Search Maze Algorithm
 # Creates Random mazes 
 # Creates a board filled all B's
@@ -128,6 +131,7 @@ def generateFilledMaze(rows, cols):
         maze.append(next_row)
     return maze
 
+# Random spot is chosen on the board recursion is used to create the maze
 def createMaze(maze):    
     start_row = (random.randint(0, (len(maze) - 3)//2)) * 2 + 1
     start_col = (random.randint(0, (len(maze[start_row]) - 3)//2)) * 2 + 1
@@ -146,12 +150,11 @@ def createMaze(maze):
                     walls += 1
                 if maze[row][col-1]  == 'B':
                     walls += 1
-                if walls == 3:
-                    maze[row][col] = "M"
+                if walls == 3:  # this will add Mushrooms to maze
+                    maze[row][col] = "M" 
 
 
-
-#Helper function 
+#Helper function recursion
 def createMazeHelper(maze, r, c):
     # 0 is North, 1 is East, 2 is South, 3 is West
     dirs = [0, 1, 2, 3]
@@ -177,14 +180,19 @@ def createMazeHelper(maze, r, c):
 def printMaze(maze):
     for row in range(0, len(maze)):
         print(maze[row])
-
+#function that randomizes maze exit location
 def finalizeMaze(source_maze):
-    rad = (random.randint(0, (len(source_maze) - 3)//2) * 2 + 1)
-    if source_maze[len(source_maze)-1][rad] == " ":
-        source_maze[len(source_maze)][rad] = 'F'
-    else:
-        source_maze[1][32] = 'F'
-    # print (len(source_maze))
+    # rad = random.randint(0, (len(source_maze)- 2) # row between 0 -> 23
+    # print("random row", rad)
+    # print("len of cols = ", len(source_maze[rad])-1)
+    # print(source_maze[rad][len(source_maze[rad])-2])
+    # if source_maze[rad][len(source_maze[rad])-2] == "B" or source_maze[rad][len(source_maze[rad])-2] == "M":
+        # if source_maze[1][len(source_maze[1])-2] == "B" or source_maze[1][len(source_maze[1])-2] == "M":
+            # finalizeMaze(source_maze)
+        # else:
+    source_maze[1][len(source_maze[1]) - 1] = "F"
+    # else:
+    #     source_maze[rad][len(source_maze[rad])-1] = "F"
 
     final_maze = []
     for row in range(0, len(source_maze)):
@@ -193,6 +201,33 @@ def finalizeMaze(source_maze):
             next_row += source_maze[row][col]
         final_maze.append(next_row)
     return final_maze
+
+#function for Enemy to find the closest Mushroom using Breath First Search BFS
+def findMushroom(row, col, maze):
+    options = []
+    initial = (row, col, "")
+    options.append(initial)
+    while(len(options) > 0):
+        op = options[0]
+        options = options[1:]
+        if maze[op[0]][op[1]] == "B" or maze[op[0]][op[1]] == "F":
+            pass #Do nothing if there is a Wall or Final Mushroom
+        elif maze[op[0]][op[1]] == "M":
+            # print("row, col, path", op)
+            return op[2]
+        else:
+            north = (op[0] - 1, op[1], op[2] + "0")
+            options.append(north)
+
+            east = (op[0], op[1] + 1, op[2] + "1")
+            options.append(east)
+
+            south = (op[0] + 1, op[1], op[2] + "2")
+            options.append(south)
+
+            west = (op[0], op[1] - 1, op[2] + "3")
+            options.append(west)
+    return("Fail: No Mushrooms Found")
 
 #creating the random maze
 maze = generateFilledMaze(25, 33)
@@ -258,16 +293,17 @@ maze = finalizeMaze(maze)
 
 ########################################### Unused Functions
 # To help draw on screen
-# TILESIZE = 32
-# GRIDWIDTH = WIDTH / TILESIZE
-# GRIDHEIGHT = HEIGHT / TILESIZE
-# lightgrey = pygame.Color(100, 100, 100)
-# darkgrey = pygame.Color(40, 40, 40)
-# def draw_grid():
-#     for x in range(0, WIDTH, TILESIZE):
-#         pygame.draw.line(screen, lightgrey, (x, 0), (x, HEIGHT))
-#     for y in range(0, HEIGHT, TILESIZE):
-#         pygame.draw.line(screen, lightgrey, (0, y), (WIDTH, y))
+screen = pygame.display.set_mode((size))
+TILESIZE = 32
+GRIDWIDTH = WIDTH / TILESIZE
+GRIDHEIGHT = HEIGHT / TILESIZE
+lightgrey = pygame.Color(100, 100, 100)
+darkgrey = pygame.Color(40, 40, 40)
+def draw_grid():
+    for x in range(0, WIDTH, TILESIZE):
+        pygame.draw.line(screen, lightgrey, (x, 0), (x, HEIGHT))
+    for y in range(0, HEIGHT, TILESIZE):
+        pygame.draw.line(screen, lightgrey, (0, y), (WIDTH, y))
 
 ########################################### Trying to make an easter egg (unsuccessful)
 # def credits(credit):
