@@ -180,6 +180,7 @@ def createMazeHelper(maze, r, c):
 def printMaze(maze):
     for row in range(0, len(maze)):
         print(maze[row])
+
 #function that randomizes maze exit location
 def finalizeMaze(source_maze):
     # rad = random.randint(0, (len(source_maze)- 2) # row between 0 -> 23
@@ -190,7 +191,12 @@ def finalizeMaze(source_maze):
         # if source_maze[1][len(source_maze[1])-2] == "B" or source_maze[1][len(source_maze[1])-2] == "M":
             # finalizeMaze(source_maze)
         # else:
+    if source_maze[1][len(source_maze[1]) - 2] == "M":
+        print("is maze here", source_maze[1][len(source_maze[1]) - 2])
+        source_maze[1][len(source_maze[1]) - 2] = " "
     source_maze[1][len(source_maze[1]) - 1] = "F"
+    
+        
     # else:
     #     source_maze[rad][len(source_maze[rad])-1] = "F"
 
@@ -227,6 +233,7 @@ def findMushroom(row, col, maze):
 
             west = (op[0], op[1] - 1, op[2] + "3")
             options.append(west)
+    print(options)
     return("Fail: No Mushrooms Found")
 
 #creating the random maze

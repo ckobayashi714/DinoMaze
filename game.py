@@ -284,13 +284,12 @@ def gameloop():
 
         global SCOREP2
 
-        if ran >= 25:
+        if ran >= 15:
             path = findMushroom(playerPC.row, playerPC.col, maze)
             print(path)
             der = int(path[0])
-            print("der: ", der)
             
-            # print(der, playerPC.row, playerPC.col)
+            print(der, playerPC.row, playerPC.col)
             if der == 0: #down
                 # walk.play()
                 playerPC.move(-1, 0)
@@ -307,10 +306,10 @@ def gameloop():
                 # walk.play()
                 playerPC.move(0, -1)
 
-            if pygame.sprite.groupcollide(enemies, mushrooms, False, True):
-                collect.play()
-                # print("MUSHROOM COLLECTED!")
-                SCOREP2 += 1
+            # if pygame.sprite.groupcollide(enemies, mushrooms, False, True):
+            #     collect.play()
+            #     # print("MUSHROOM COLLECTED!")
+            #     SCOREP2 += 1
 
         for event in pygame.event.get():            
             if event.type == pygame.KEYDOWN:
