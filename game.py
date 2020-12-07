@@ -10,13 +10,13 @@ pygame.display.set_caption(TITLE)
 
 # Player Class
 class Dino(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__(dinos)  
+    def __init__(self, pos, maze):
+        super().__init__(dinos)
+        self.maze = maze 
         self.image = dinoimg
         self.rect = self.image.get_rect(topleft=pos)
-        self.dino_row, self.dino_col = pos
-        self.dino_x = 0
-        self.dino_y = 0
+        self.row = 1
+        self.col = 1
         self.dino_speed = TS
         pygame.key.set_repeat(200, TS)
     
@@ -25,41 +25,40 @@ class Dino(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     # Lets the player move around the screen
-    def move(self, dino_x, dino_y):
-        if dino_x != 0:
-            self.move_SA(dino_x, 0)
-        if dino_y != 0:
-            self.move_SA(0, dino_y)
+    def move(self, dino_row, dino_col):
+        # print(row, col)
+        if dino_row != 0:
+            self.move_SA(dino_row, 0)
+        if dino_col != 0:
+            self.move_SA(0, dino_col)
 
     #Dino can't walk through walls this prevents him from proceeding if there a barrier
-    def move_SA(self, dino_x, dino_y):
-        self.rect.x += dino_x * TS
-        self.rect.y += dino_y * TS
-        for bound in bounds:
-            if self.rect.colliderect(bound.rect):
-                # print('Hit a wall!')
-                if dino_x > 0:
-                    self.rect.right = bound.rect.left
-                if dino_x < 0:
-                    self.rect.left = bound.rect.right
-                if dino_y > 0:
-                    self.rect.bottom = bound.rect.top
-                if dino_y < 0:
-                    self.rect.top = bound.rect.bottom
+    def move_SA(self, dino_row, dino_col):
+            self.row += dino_row
+            self.col += dino_col
+            # print(self.row, self.col)
+            if self.maze[self.row][self.col] == 'B':
+                # print(self.row, self.col)
+                self.row -= dino_row
+                self.col -= dino_col
+            # else:
+                # self.move_counter = 0
+            self.rect.x = self.col * TS
+            self.rect.y = self.row * TS
 
 #Enemy class
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, maze):
         super().__init__(enemies)
+        self.maze = maze
         self.image = enemy
         self.rect = self.image.get_rect(topleft=pos)
-        self.maze = maze
         self.row = 1
         self.col = len(maze[self.row]) - 2
         self.move_counter = 0
         self.move_SA(0, 0)       
-        # self.enemy_speed = TS
-        #pygame.key.set_repeat(200, TS)
+        self.enemy_speed = TS
+        pygame.key.set_repeat(200, TS)
 
     # draw the player on the screen
     def draw(self):
@@ -79,9 +78,6 @@ class Enemy(pygame.sprite.Sprite):
         if self.maze[self.row][self.col] == 'B' or self.maze[self.row][self.col] == 'F':
             self.row -= enemy_row
             self.col -= enemy_col
-        elif self.maze[self.row][self.col] == '':
-            self.row += enemy_row
-            self.col += enemy_col
         else:
             self.move_counter = 0
         self.rect.x = self.col * TS
@@ -104,9 +100,9 @@ class Wall():
         self.rect = pygame.Rect(pos[0], pos[1], TS, TS)
 
 # creates the player
-player = Dino((TS, TS))
+player = Dino((TS, TS), maze)
 dinos.add(player)
-playerPC = Enemy((TS,TS), maze)
+playerPC = Enemy((TS, TS), maze)
 enemies.add(playerPC)
 
 # creates the maze
@@ -282,14 +278,15 @@ def gameloop():
         ran = random.randint(0, playerPC.move_counter)
         # print(playerPC.move_counter)
 
-        global SCOREP2
+        global SCORE, SCOREP2
 
-        if ran >= 15:
+        if ran >= 30:
             path = findMushroom(playerPC.row, playerPC.col, maze)
-            print(path)
+            # print(path)
+            # printMaze(maze)
             der = int(path[0])
             
-            print(der, playerPC.row, playerPC.col)
+            # print(der, playerPC.row, playerPC.col)
             if der == 0: #down
                 # walk.play()
                 playerPC.move(-1, 0)
@@ -305,51 +302,57 @@ def gameloop():
             if der == 3 : #left
                 # walk.play()
                 playerPC.move(0, -1)
-
-            # if pygame.sprite.groupcollide(enemies, mushrooms, False, True):
-            #     collect.play()
-            #     # print("MUSHROOM COLLECTED!")
-            #     SCOREP2 += 1
+            
+            if maze[playerPC.row][playerPC.col] == "M":
+                maze[playerPC.row] = maze[playerPC.row][0: playerPC.col] + \
+                    " " + maze[playerPC.row][playerPC.col + 1: ]
+                pygame.sprite.groupcollide(enemies, mushrooms, False, True)
+                SCOREP2 += 1
 
         for event in pygame.event.get():            
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     # walk.play()
-                    player.move(1, 0)
+                    player.move(0, 1)
 
                 if event.key == pygame.K_UP:
                     # walk.play()
-                    player.move(0, -1)
+                    player.move(-1, 0)
 
                 if event.key == pygame.K_DOWN:
                     # walk.play()
-                    player.move(0, 1)
+                    player.move(1, 0)
 
                 if event.key == pygame.K_LEFT:
                     # walk.play()
-                    player.move(-1, 0)
+                    player.move(0, -1)
 
                 if event.key == pygame.K_RIGHT:
                     # walk.play()
-                    player.move(1, 0)
+                    player.move(0, 1)
 
                 if event.key == pygame.K_ESCAPE:
                     pygame.event.post(pygame.event.Event(pygame.quit()))    
 
-            # When Dino reaches the exit they win if collected at least 5 mushrooms, lose if not.         
-            global SCORE
-            if player.rect.colliderect(final_mushroom) and SCORE >= 5:
+            if maze[player.row][player.col] == "M":
+                maze[player.row] = maze[player.row][0: player.col] + \
+                    " " + maze[player.row][player.col + 1:]
+                pygame.sprite.groupcollide(dinos, mushrooms, False, True)
+                collect.play()
+                # print("MUSHROOM COLLECTED!")
+                SCORE += 1
+
+            # When Dino reaches the exit they win if collected more mushrooms than Enemy, lose if not.         
+            if player.rect.colliderect(final_mushroom) and SCORE >= SCOREP2:
                 winner()
                 
-            if player.rect.colliderect(final_mushroom) and SCORE < 5:
-                gameOver()  
+            if player.rect.colliderect(final_mushroom) and SCORE < SCOREP2:
+                gameOver()
+
+            if player.rect.colliderect(playerPC.rect):
+                gameOver()
         
             # Will remove/clear mushrooms from the board. Collect and increase score
-            if pygame.sprite.groupcollide(dinos, mushrooms, False, True):
-                collect.play()
-                print("MUSHROOM COLLECTED!")
-                SCORE += 1
-             
             if event.type == pygame.QUIT:
                 running = False
                 pygame.quit()

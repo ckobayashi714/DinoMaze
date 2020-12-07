@@ -151,7 +151,7 @@ def createMaze(maze):
                 if maze[row][col-1]  == 'B':
                     walls += 1
                 if walls == 3:  # this will add Mushrooms to maze
-                    maze[row][col] = "M" 
+                    maze[row][col] = 'M' 
 
 
 #Helper function recursion
@@ -192,7 +192,7 @@ def finalizeMaze(source_maze):
             # finalizeMaze(source_maze)
         # else:
     if source_maze[1][len(source_maze[1]) - 2] == "M":
-        print("is maze here", source_maze[1][len(source_maze[1]) - 2])
+        # print("is maze here", source_maze[1][len(source_maze[1]) - 2])
         source_maze[1][len(source_maze[1]) - 2] = " "
     source_maze[1][len(source_maze[1]) - 1] = "F"
     
@@ -210,11 +210,13 @@ def finalizeMaze(source_maze):
 
 #function for Enemy to find the closest Mushroom using Breath First Search BFS
 def findMushroom(row, col, maze):
+    visited = [[0] * len(maze[0]) for i in range(len(maze))]
     options = []
-    initial = (row, col, "")
+    initial = (row, col, '')
     options.append(initial)
     while(len(options) > 0):
         op = options[0]
+        visited[op[0]][op[1]] = 1
         options = options[1:]
         if maze[op[0]][op[1]] == "B" or maze[op[0]][op[1]] == "F":
             pass #Do nothing if there is a Wall or Final Mushroom
@@ -223,17 +225,24 @@ def findMushroom(row, col, maze):
             return op[2]
         else:
             north = (op[0] - 1, op[1], op[2] + "0")
-            options.append(north)
+
+            # print(visited)
+            # print(north)
+            if visited[north[0]][north[1]] == 0:
+                options.append(north)
 
             east = (op[0], op[1] + 1, op[2] + "1")
-            options.append(east)
+            if visited[east[0]][east[1]] == 0:
+                options.append(east)
 
             south = (op[0] + 1, op[1], op[2] + "2")
-            options.append(south)
+            if visited[south[0]][south[1]] == 0:
+                options.append(south)
 
             west = (op[0], op[1] - 1, op[2] + "3")
-            options.append(west)
-    print(options)
+            if visited[west[0]][west[1]] == 0:
+                options.append(west)
+    # print(options)
     return("Fail: No Mushrooms Found")
 
 #creating the random maze
