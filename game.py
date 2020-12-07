@@ -141,14 +141,14 @@ def showScore(first=1):
 
 def showScoreP2(first=1):
     Score = pygame.font.SysFont('roboto', 50)
-    Ssurf = Score.render("P2 SCORE: {0}".format(SCOREP2), True, white)
+    Ssurf = Score.render("P2 SCORE: {0}".format(SCOREP2), True, yellow)
     Score_rect = Ssurf.get_rect()
 
     Score2 = pygame.font.SysFont('roboto', 75)
     Ssurf2 = Score2.render("P2 SCORE: {0}".format(SCOREP2), True, green)
     Score_rect2 = Ssurf2.get_rect()
     if first == 1:
-        Score_rect.bottomleft = (0, HEIGHT)
+        Score_rect.bottomleft = (0, 25*TS+3)
         screen.blit(Ssurf, Score_rect)
     else:
         Score_rect2.leftbottom = (WIDTH//2, HEIGHT//2+TS*4)
@@ -308,6 +308,9 @@ def gameloop():
                     " " + maze[playerPC.row][playerPC.col + 1: ]
                 pygame.sprite.groupcollide(enemies, mushrooms, False, True)
                 SCOREP2 += 1
+            
+            if playerPC.rect.colliderect(player.rect):
+                gameOver()
 
         for event in pygame.event.get():            
             if event.type == pygame.KEYDOWN:

@@ -243,6 +243,7 @@ def findMushroom(row, col, maze):
             if visited[west[0]][west[1]] == 0:
                 options.append(west)
     # print(options)
+    print("no mushrooms found")
     return("Fail: No Mushrooms Found")
 
 #creating the random maze
