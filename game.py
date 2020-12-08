@@ -7,6 +7,12 @@ pygame.init()
 screen = pygame.display.set_mode((size))
 pygame.display.set_caption(TITLE)
 
+def clearSprites():
+    dinos.clear(screen, background)
+    mushrooms.clear(screen, background)
+    enemies.clear(screen, background)
+    walls.clear(screen, background)
+    pygame.display.flip()
 
 # Player Class
 class Dino(pygame.sprite.Sprite):
@@ -41,8 +47,6 @@ class Dino(pygame.sprite.Sprite):
                 # print(self.row, self.col)
                 self.row -= dino_row
                 self.col -= dino_col
-            # else:
-                # self.move_counter = 0
             self.rect.x = self.col * TS
             self.rect.y = self.row * TS
 
@@ -71,7 +75,7 @@ class Enemy(pygame.sprite.Sprite):
         if enemy_col != 0:
             self.move_SA(0, enemy_col)
 
-    #Enemy can't walk through walls this prevents him from proceeding if there a barrier
+    #Enemy can't walk through walls this prevents him from proceeding if there's a barrier
     def move_SA(self, enemy_row, enemy_col):
         self.row += enemy_row
         self.col += enemy_col
@@ -93,34 +97,19 @@ class Mushroom(pygame.sprite.Sprite):
     # draw the mushrooms on the screen
     def draw(self):
         screen.blit(self.image, self.rect)
-class Wall():
+
+
+class Wall(pygame.sprite.Sprite):
     # Wall thickness
     def __init__(self, pos):
+        super().__init__(walls)
         bounds.append(self)
         self.rect = pygame.Rect(pos[0], pos[1], TS, TS)
 
-# creates the player
-player = Dino((TS, TS), maze)
-dinos.add(player)
-playerPC = Enemy((TS, TS), maze)
-enemies.add(playerPC)
+    # def draw(self):
+    #     screen.blit(self.image, self.rect)
+        
 
-# creates the maze
-# Parse the maze. B = wall, F = exit, M = mushrooms
-x = y = 0
-for row in maze:
-    for col in row:
-        if col == "B":
-            Wall((x, y))
-        if col == "F":
-            # final_mushroom = Mushroom((x, y))
-            final_mushroom = pygame.Rect(x, y, TS, TS)
-        if col == "M":
-            mushroom1 = Mushroom((x, y))
-            mushroom1 = pygame.Rect(x, y, TS, TS)            
-        x += TS
-    y += TS
-    x = 0
 
 # function to show the score during the game and at the end
 def showScore(first=1):
@@ -169,7 +158,7 @@ def gameOver():
     showScore(0)
     pygame.display.flip()
     time.sleep(5)
-    pygame.quit()
+
 
 # function to show the winner screen and score
 def winner():
@@ -179,23 +168,48 @@ def winner():
     showScore(0)
     pygame.display.flip()
     time.sleep(5)
-    pygame.quit()
+
 
 # function to show the Instruction page 2 of 3
-def instruct():
-    global instruct
+def instructions():
+    global ran
+    instruct = True
     while instruct:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
+                if event.key == ord('e'):
+                    ran = 50
                     button.play()
                     instruct = False
                     break
-                    gameloop()
+                    gameloop(ran)
+
+                if event.key == ord('m'):
+                    ran = 25
+                    button.play()
+                    instruct = False
+                    break
+                    gameloop(ran)
+
+                if event.key == ord('h'):
+                    ran = 1
+                    button.play()
+                    instruct = False
+                    break
+                    gameloop(ran)
+
+                if event.key == pygame.K_RETURN:
+                    ran = 1
+                    button.play()
+                    instruct = False
+                    break
+                    gameloop(ran)
+
                 if event.key == pygame.K_ESCAPE:
                     instruct = False
                     time.sleep(1)
                     pygame.quit()
+
             if event.type == pygame.QUIT:
                 instruct = False
                 pygame.quit()
@@ -203,7 +217,7 @@ def instruct():
         #PNG imgs on instruction screen
         screen.fill(black)  
         screen.blit(background, background_rect)
-        screen.blit(instructions, instructions_rect)       
+        screen.blit(instructionspg, instructionspg_rect)       
         screen.blit(rules, rules_rect)       
         screen.blit(enterkey, enterkey_rect)        
         screen.blit(startenter, startenter_rect)        
@@ -214,7 +228,7 @@ def instruct():
 
 # function to show the title page 1 of 3
 def game_intro():
-    global intro
+    intro = True
     while intro:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -222,7 +236,7 @@ def game_intro():
                     button.play()
                     intro = False
                     break
-                    instuctions()
+                    instructions()
                 if event.key == pygame.K_ESCAPE:
                     intro = False
                     time.sleep(1)
@@ -239,15 +253,15 @@ def game_intro():
         pygame.display.flip()
 
 # function to play the game page 3 of 3
-def gameloop():
+def gameloop(ran):
     # start the timer
     clock = pygame.time.Clock()
     running = True
     while running:
         # set the whole scene and board
         screen.fill(white)
-        # screen.blit(background, background_rect)
-        draw_grid()
+        screen.blit(background, background_rect)
+        # draw_grid()
         # create the maze and mushrooms on the screen   
         for bound in bounds:
             pygame.draw.rect(screen, (black), bound.rect)
@@ -268,22 +282,28 @@ def gameloop():
             seconds -= 1
             milliseconds -= 1000
         timer()
-        milliseconds += clock.tick_busy_loop(40)
+        milliseconds += clock.tick_busy_loop(60)
         # player loses if timer reaches 0
         if minutes == 0 and seconds == 0:
             gameOver()
+            clearSprites()
+            running = False
+            
+
         pygame.display.flip()
 
         playerPC.move_counter += 1
-        ran = random.randint(0, playerPC.move_counter)
+        roll = random.randint(0, playerPC.move_counter)
         # print(playerPC.move_counter)
 
         global SCORE, SCOREP2
 
-        if ran >= 30:
+        if roll > ran:
             path = findMushroom(playerPC.row, playerPC.col, maze)
             # print(path)
             # printMaze(maze)
+            if path == '':
+                path = findPlayer(playerPC.row, playerPC.col, maze, player.row, player.col)
             der = int(path[0])
             
             # print(der, playerPC.row, playerPC.col)
@@ -311,6 +331,9 @@ def gameloop():
             
             if playerPC.rect.colliderect(player.rect):
                 gameOver()
+                clearSprites()
+                running = False
+                
 
         for event in pygame.event.get():            
             if event.type == pygame.KEYDOWN:
@@ -336,7 +359,8 @@ def gameloop():
 
                 if event.key == pygame.K_ESCAPE:
                     pygame.event.post(pygame.event.Event(pygame.quit()))    
-
+            
+            # Will remove/clear mushrooms from the board. Collect and increase score    
             if maze[player.row][player.col] == "M":
                 maze[player.row] = maze[player.row][0: player.col] + \
                     " " + maze[player.row][player.col + 1:]
@@ -348,18 +372,72 @@ def gameloop():
             # When Dino reaches the exit they win if collected more mushrooms than Enemy, lose if not.         
             if player.rect.colliderect(final_mushroom) and SCORE >= SCOREP2:
                 winner()
+                clearSprites()
+                running = False
+                
                 
             if player.rect.colliderect(final_mushroom) and SCORE < SCOREP2:
                 gameOver()
+                clearSprites()
+                running = False
+                
 
             if player.rect.colliderect(playerPC.rect):
                 gameOver()
-        
-            # Will remove/clear mushrooms from the board. Collect and increase score
-            if event.type == pygame.QUIT:
+                clearSprites()
                 running = False
+                
+
+            
+            if event.type == pygame.QUIT:
+                clearSprites()
+                running = False            
                 pygame.quit()
-game_intro()
-instruct()
-gameloop()
+                return True
+    print("Now Outside of Game")
+    return False
+
+
+quitting = False
+while quitting == False:
+    # creates the player
+    dinos = pygame.sprite.Group()
+    enemies = pygame.sprite.Group()
+    mushrooms = pygame.sprite.Group()
+    walls = pygame.sprite.Group()
+
+    maze = generateFilledMaze(25, 33)
+    createMaze(maze)
+    maze = finalizeMaze(maze)
+    printMaze(maze)
+
+    player = Dino((TS, TS), maze)
+    dinos.add(player)
+    playerPC = Enemy((TS, TS), maze)
+    enemies.add(playerPC)
+    ran = 50
+    
+
+    # creates the maze
+    # Parse the maze. B = wall, F = exit, M = mushrooms
+    x = y = 0
+    for row in maze:
+        for col in row:
+            if col == "B":
+                hello = Wall((x, y))
+                hello = pygame.Rect(x, y, TS, TS)
+            if col == "F":
+                # final_mushroom = Mushroom((x, y))
+                final_mushroom = pygame.Rect(x, y, TS, TS)
+            if col == "M":
+                mushroom1 = Mushroom((x, y))
+                mushroom1 = pygame.Rect(x, y, TS, TS)
+            x += TS
+        y += TS
+        x = 0
+    
+    game_intro()
+    instructions()
+    quitting = gameloop(ran)
+    
 pygame.quit()

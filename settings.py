@@ -2,12 +2,11 @@ import random
 import pygame
 
 # Sprite Groups
-dinos = pygame.sprite.Group()
-enemies = pygame.sprite.Group()
-mushrooms = pygame.sprite.Group()
+# dinos = pygame.sprite.Group()
+# enemies = pygame.sprite.Group()
+# mushrooms = pygame.sprite.Group()
 
-
-# Global Variables 
+# Global Variables
 size = WIDTH, HEIGHT = 1056, 800
 TS = 32
 dino_size = D_WIDTH, D_HEIGHT = TS, TS
@@ -30,9 +29,9 @@ purple = pygame.Color(143, 0, 255)
 
 
 # For the while loops
-instruct = True
-credit = True
-intro = True
+# instruct = True
+# credit = True
+# intro = True
 
 ########################################### Background Images
 background = pygame.image.load('sprites/background/backg.png')
@@ -94,8 +93,8 @@ pressSB = pygame.image.load('sprites/pressSB.png')
 pressSB_rect = pressSB.get_rect(center=(WIDTH//2, TS*15))
 
 ########################################## Instruction Page Images 
-instructions = pygame.image.load('sprites/gameinst.png')
-instructions_rect = instructions.get_rect(midtop=(WIDTH//2, 0))
+instructionspg = pygame.image.load('sprites/gameinst.png')
+instructionspg_rect = instructionspg.get_rect(midtop=(WIDTH//2, 0))
 
 rules = pygame.image.load('sprites/keys/help.png')
 rules_rect = rules.get_rect(midtop=(WIDTH//2, TS*4))
@@ -181,24 +180,21 @@ def printMaze(maze):
     for row in range(0, len(maze)):
         print(maze[row])
 
-#function that randomizes maze exit location
+#function that randomizes the maze exit location
 def finalizeMaze(source_maze):
-    # rad = random.randint(0, (len(source_maze)- 2) # row between 0 -> 23
+    rad = random.randint(0, (len(source_maze)- 2)) # row between 0 -> 23
     # print("random row", rad)
     # print("len of cols = ", len(source_maze[rad])-1)
     # print(source_maze[rad][len(source_maze[rad])-2])
-    # if source_maze[rad][len(source_maze[rad])-2] == "B" or source_maze[rad][len(source_maze[rad])-2] == "M":
-        # if source_maze[1][len(source_maze[1])-2] == "B" or source_maze[1][len(source_maze[1])-2] == "M":
-            # finalizeMaze(source_maze)
-        # else:
-    if source_maze[1][len(source_maze[1]) - 2] == "M":
-        # print("is maze here", source_maze[1][len(source_maze[1]) - 2])
-        source_maze[1][len(source_maze[1]) - 2] = " "
-    source_maze[1][len(source_maze[1]) - 1] = "F"
-    
-        
-    # else:
-    #     source_maze[rad][len(source_maze[rad])-1] = "F"
+    if source_maze[rad][len(source_maze[rad])-2] == "B" or source_maze[rad][len(source_maze[rad])-2] == "M":
+        if source_maze[1][len(source_maze[1])-2] == "B" or source_maze[1][len(source_maze[1])-2] == "M":
+            finalizeMaze(source_maze)
+        else:
+            source_maze[1][len(source_maze[1]) - 1] = "F"
+            if source_maze[1][len(source_maze[1]) - 2] == "M":
+                source_maze[1][len(source_maze[1]) - 2] = " "      
+    else:
+        source_maze[rad][len(source_maze[rad])-1] = "F"
 
     final_maze = []
     for row in range(0, len(source_maze)):
@@ -207,6 +203,46 @@ def finalizeMaze(source_maze):
             next_row += source_maze[row][col]
         final_maze.append(next_row)
     return final_maze
+
+
+# function for Enemy to find the player after collecting last mushroom
+# using Breath First Search BFS
+def findPlayer(row, col, maze, p_row, p_col):
+    visited = [[0] * len(maze[0]) for i in range(len(maze))]
+    options = []
+    initial = (row, col, '')
+    options.append(initial)
+    while(len(options) > 0):
+        op = options[0]
+        visited[op[0]][op[1]] = 1
+        options = options[1:]
+        if maze[op[0]][op[1]] == "B" or maze[op[0]][op[1]] == "F":
+            pass  # Do nothing if there is a Wall or Final Mushroom
+        elif op[0] == p_row and op[1]== p_col:
+            # print("row, col, path", op)
+            return op[2]
+        else:
+            north = (op[0] - 1, op[1], op[2] + "0")
+            # print(visited)
+            # print(north)
+            if visited[north[0]][north[1]] == 0:
+                options.append(north)
+
+            east = (op[0], op[1] + 1, op[2] + "1")
+            if visited[east[0]][east[1]] == 0:
+                options.append(east)
+
+            south = (op[0] + 1, op[1], op[2] + "2")
+            if visited[south[0]][south[1]] == 0:
+                options.append(south)
+
+            west = (op[0], op[1] - 1, op[2] + "3")
+            if visited[west[0]][west[1]] == 0:
+                options.append(west)
+    # print(options)
+    # print("no other mushrooms found")/
+    return('')
+
 
 #function for Enemy to find the closest Mushroom using Breath First Search BFS
 def findMushroom(row, col, maze):
@@ -225,7 +261,6 @@ def findMushroom(row, col, maze):
             return op[2]
         else:
             north = (op[0] - 1, op[1], op[2] + "0")
-
             # print(visited)
             # print(north)
             if visited[north[0]][north[1]] == 0:
@@ -241,15 +276,15 @@ def findMushroom(row, col, maze):
 
             west = (op[0], op[1] - 1, op[2] + "3")
             if visited[west[0]][west[1]] == 0:
-                options.append(west)
+                options.append(west)            
     # print(options)
-    print("no mushrooms found")
-    return("Fail: No Mushrooms Found")
+    # print("no other mushrooms found")
+    return('')
 
-#creating the random maze
-maze = generateFilledMaze(25, 33)
-createMaze(maze)
-maze = finalizeMaze(maze)
+# #creating the random maze
+# maze = generateFilledMaze(25, 33)
+# createMaze(maze)
+# maze = finalizeMaze(maze)
 # printMaze(maze)
 
 """maze = [
