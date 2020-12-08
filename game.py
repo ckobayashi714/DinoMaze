@@ -225,7 +225,7 @@ def instructions():
         screen.blit(background, background_rect)
         screen.blit(instructionspg, instructionspg_rect)       
         screen.blit(rules, rules_rect)       
-        screen.blit(enterkey, enterkey_rect)        
+        # screen.blit(enterkey, enterkey_rect)        
         screen.blit(startenter, startenter_rect)        
         screen.blit(move, move_rect)        
         screen.blit(arrows, arrows_rect)       
@@ -347,19 +347,19 @@ def gameloop(ran):
                     # walk.play()
                     player.move(0, 1)
 
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == ord('w') :
                     # walk.play()
                     player.move(-1, 0)
 
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN or event.key == ord('s'):
                     # walk.play()
                     player.move(1, 0)
 
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT or event.key == ord('a'):
                     # walk.play()
                     player.move(0, -1)
 
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT or event.key == ord('d'):
                     # walk.play()
                     player.move(0, 1)
 
