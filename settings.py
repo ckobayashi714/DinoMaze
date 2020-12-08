@@ -11,9 +11,9 @@ size = WIDTH, HEIGHT = 1056, 800
 TS = 32
 dino_size = D_WIDTH, D_HEIGHT = TS, TS
 TITLE = 'DINO MAZE'
-SCORE = 0
-SCOREP2 = 0
-bounds = []
+# SCORE = 0
+# SCOREP2 = 0
+# bounds = []
 minutes = 5
 seconds = 0
 milliseconds = 0
@@ -75,6 +75,10 @@ mush1 = pygame.transform.scale(mush1, (dino_size))
 ########################################### Computer Player Sprite
 enemy = pygame.image.load('sprites/dino/enemy.png')
 enemy = pygame.transform.scale(enemy, (dino_size))
+
+########################################### Wall Player Sprite
+block = pygame.image.load('sprites/dino/black.png')
+block = pygame.transform.scale(block, (dino_size))
 
 ###########################################  GameOver function
 lost = pygame.image.load('sprites/GO.png')
@@ -353,9 +357,9 @@ lightgrey = pygame.Color(100, 100, 100)
 darkgrey = pygame.Color(40, 40, 40)
 def draw_grid():
     for x in range(0, WIDTH, TILESIZE):
-        pygame.draw.line(screen, lightgrey, (x, 0), (x, HEIGHT))
+        pygame.draw.line(screen, black, (x, 0), (x, HEIGHT))
     for y in range(0, HEIGHT, TILESIZE):
-        pygame.draw.line(screen, lightgrey, (0, y), (WIDTH, y))
+        pygame.draw.line(screen, black, (0, y), (WIDTH, y))
 
 ########################################### Trying to make an easter egg (unsuccessful)
 # def credits(credit):

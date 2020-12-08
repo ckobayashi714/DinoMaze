@@ -27,7 +27,7 @@ class Dino(pygame.sprite.Sprite):
         self.row = 1
         self.col = 1
         self.dino_speed = TS
-        pygame.key.set_repeat(200, TS)
+        pygame.key.set_repeat(400, TS)
     
     # draw the player on the screen
     def draw(self):
@@ -106,11 +106,14 @@ class Wall(pygame.sprite.Sprite):
     # Wall thickness
     def __init__(self, pos):
         super().__init__(walls)
-        bounds.append(self)
+        # bounds.append(self)
         self.rect = pygame.Rect(pos[0], pos[1], TS, TS)
+        self.image = block
+        
 
-    # def draw(self):
-    #     screen.blit(self.image, self.rect)
+    def draw(self):
+        screen.blit(self.image, self.rect)
+
         
 
 
@@ -263,17 +266,18 @@ def gameloop(ran):
     while running:
         # set the whole scene and board
         screen.fill(white)
-        screen.blit(background, background_rect)
+        # screen.blit(background, background_rect)
         # draw_grid()
         # create the maze and mushrooms on the screen   
-        for bound in bounds:
-            pygame.draw.rect(screen, (black), bound.rect)
-            pygame.draw.rect(screen, (purple), final_mushroom)
-            # pygame.draw.rect(screen, (yellow), final_mushroom, 2)
+        # for bound in bounds:
+        #     pygame.draw.rect(screen, (black), bound.rect)
+        pygame.draw.rect(screen, (purple), final_mushroom)
+        pygame.draw.rect(screen, (yellow), final_mushroom, 4)
         # draw the players, mushrooms, and baddies
         dinos.draw(screen)
         mushrooms.draw(screen)
         enemies.draw(screen)
+        walls.draw(screen)
         showScore()
         showScoreP2()
         # update the timer
@@ -288,8 +292,8 @@ def gameloop(ran):
         milliseconds += clock.tick_busy_loop(60)
         # player loses if timer reaches 0
         if minutes == 0 and seconds == 0:
-            gameOver()
             clearSprites()
+            gameOver()
             running = False
             
 
@@ -372,13 +376,13 @@ def gameloop(ran):
                 SCORE += 1
 
             # When Dino reaches the exit they win if collected more mushrooms than Enemy, lose if not.         
-            if player.rect.colliderect(final_mushroom) and SCORE > SCOREP2:
+            if player.rect.colliderect(final_mushroom) and SCORE >= 5:
                 winner()
                 clearSprites()
                 running = False
                 
                 
-            if player.rect.colliderect(final_mushroom) and SCORE <= SCOREP2:
+            if player.rect.colliderect(final_mushroom) and SCORE < 5:
                 gameOver()
                 clearSprites()
                 running = False
@@ -393,7 +397,7 @@ def gameloop(ran):
                 running = False            
                 pygame.quit()
                 return True
-    print("Now Outside of Game")
+    # print("Now Outside of Game")
     return False
 
 
@@ -415,6 +419,8 @@ while quitting == False:
     playerPC = Enemy((TS, TS), maze)
     enemies.add(playerPC)
     ran = 50
+    SCORE = 0
+    SCOREP2 = 0
     
 
     # creates the maze
@@ -423,8 +429,8 @@ while quitting == False:
     for row in maze:
         for col in row:
             if col == "B":
-                hello = Wall((x, y))
-                hello = pygame.Rect(x, y, TS, TS)
+                blocks = Wall((x, y))
+                blocks = pygame.Rect(x, y, TS, TS)
             if col == "F":
                 # final_mushroom = Mushroom((x, y))
                 final_mushroom = pygame.Rect(x, y, TS, TS)
