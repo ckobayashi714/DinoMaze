@@ -14,6 +14,9 @@ def clearSprites():
     walls.clear(screen, background)
     pygame.display.flip()
 
+
+
+
 # Player Class
 class Dino(pygame.sprite.Sprite):
     def __init__(self, pos, maze):
@@ -333,8 +336,7 @@ def gameloop(ran):
                 gameOver()
                 clearSprites()
                 running = False
-                
-
+    
         for event in pygame.event.get():            
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -370,25 +372,22 @@ def gameloop(ran):
                 SCORE += 1
 
             # When Dino reaches the exit they win if collected more mushrooms than Enemy, lose if not.         
-            if player.rect.colliderect(final_mushroom) and SCORE >= SCOREP2:
+            if player.rect.colliderect(final_mushroom) and SCORE > SCOREP2:
                 winner()
                 clearSprites()
                 running = False
                 
                 
-            if player.rect.colliderect(final_mushroom) and SCORE < SCOREP2:
+            if player.rect.colliderect(final_mushroom) and SCORE <= SCOREP2:
                 gameOver()
                 clearSprites()
                 running = False
-                
-
+            
             if player.rect.colliderect(playerPC.rect):
                 gameOver()
                 clearSprites()
                 running = False
                 
-
-            
             if event.type == pygame.QUIT:
                 clearSprites()
                 running = False            
