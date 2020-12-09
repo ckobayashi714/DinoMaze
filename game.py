@@ -143,7 +143,7 @@ def showScoreP2(first=1):
     Ssurf2 = Score2.render("P2 SCORE: {0}".format(SCOREP2), True, green)
     Score_rect2 = Ssurf2.get_rect()
     if first == 1:
-        Score_rect.bottomleft = (0, 25*TS+3)
+        Score_rect.bottomleft = (0, HEIGHT+3)
         screen.blit(Ssurf, Score_rect)
     else:
         Score_rect2.leftbottom = (WIDTH//2, HEIGHT//2+TS*4)
@@ -153,7 +153,7 @@ def showScoreP2(first=1):
 def timer():
     Timer = pygame.font.SysFont('roboto', 50)
     Tsurf = Timer.render("TIMER {}:{}".format(minutes, seconds), True, red)
-    Timer_rect = Tsurf.get_rect(topleft=(TS*27, 0))
+    Timer_rect = Tsurf.get_rect(topleft=(HEIGHT+32, 0))
     screen.blit(Tsurf, Timer_rect)
 
 # function to show the gameover screen and score
@@ -265,7 +265,7 @@ def gameloop(ran):
     running = True
     while running:
         # set the whole scene and board
-        screen.fill(white)
+        screen.fill(lightgrey)
         # screen.blit(background, background_rect)
         # draw_grid()
         # create the maze and mushrooms on the screen   
@@ -409,7 +409,7 @@ while quitting == False:
     mushrooms = pygame.sprite.Group()
     walls = pygame.sprite.Group()
 
-    maze = generateFilledMaze(25, 33)
+    maze = generateFilledMaze(27, 35)
     createMaze(maze)
     maze = finalizeMaze(maze)
     printMaze(maze)

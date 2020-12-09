@@ -7,7 +7,8 @@ import pygame
 # mushrooms = pygame.sprite.Group()
 
 # Global Variables
-size = WIDTH, HEIGHT = 1056, 800
+#old 1056,800
+size = WIDTH, HEIGHT = 1120, 864
 TS = 32
 dino_size = D_WIDTH, D_HEIGHT = TS, TS
 TITLE = 'DINO MAZE'
@@ -28,7 +29,7 @@ green = pygame.Color(0, 255, 0)
 purple = pygame.Color(143, 0, 255)
 
 
-# For the while loops
+# For the while loop
 # instruct = True
 # credit = True
 # intro = True
