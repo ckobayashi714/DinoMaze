@@ -153,7 +153,7 @@ def showScoreP2(first=1):
 def timer():
     Timer = pygame.font.SysFont('roboto', 50)
     Tsurf = Timer.render("TIMER {}:{}".format(minutes, seconds), True, red)
-    Timer_rect = Tsurf.get_rect(topleft=(HEIGHT+32, 0))
+    Timer_rect = Tsurf.get_rect(topleft=(HEIGHT+(TS*2), 0))
     screen.blit(Tsurf, Timer_rect)
 
 # function to show the gameover screen and score
@@ -409,7 +409,7 @@ while quitting == False:
     mushrooms = pygame.sprite.Group()
     walls = pygame.sprite.Group()
 
-    maze = generateFilledMaze(27, 35)
+    maze = generateFilledMaze(25, 33)
     createMaze(maze)
     maze = finalizeMaze(maze)
     printMaze(maze)

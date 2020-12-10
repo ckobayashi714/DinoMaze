@@ -8,7 +8,7 @@ import pygame
 
 # Global Variables
 #old 1056,800
-size = WIDTH, HEIGHT = 1120, 864
+size = WIDTH, HEIGHT = 1056,800
 TS = 32
 dino_size = D_WIDTH, D_HEIGHT = TS, TS
 TITLE = 'DINO MAZE'
