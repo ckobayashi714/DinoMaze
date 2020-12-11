@@ -9,13 +9,13 @@ __Coded in:__
 
 ## Description
 
-The player (Dino) moves about the screen using the arrow or WASD keys to collect mushrooms. To win the game, the player must collect at least 5 mushrooms and exit the maze before the timer runs out.
+The player (Green Dino) moves about the screen using the arrow or WASD keys to collect mushrooms. To win the game, the player must collect more mushrooms than the AI PC Player and exit the maze before the PC Player catches him or the timer runs out.
 
 __Gameplay:__
 
-+ Use keyboard keys to collect *at least* 5 mushrooms
++ Use keyboard keys to collect *more* mushrooms than the blue Dino
 + Keep track of the countdown timer
-+ Exit the maze before time runs out
++ Exit the maze before time runs out or the blue Dino catches him
 
 ## Visuals
 
@@ -43,31 +43,3 @@ __Music and Sound FX__
 + Jumping SFX by Lefty_Studios licensed by CC0 1.0, https://freesound.org/people/Lefty_Studios/sounds/369515/, retrieved on June 15, 2020, freesound.org
 + Jingle Achievement by LittleRobotSoundFactory licensed CC BY 3.0, https://freesound.org/people/LittleRobotSoundFactory/sounds/270331/, retrieved on June 15, 2020, freesound.org
 + Arcade Game Over by ScreamStudio licensed by CC0 1.0, https://freesound.org/people/ScreamStudio/sounds/412168/, retrieved on June 15, 2020, freesound.org
-
-## License
-
-MIT License
-
-Copyright (c) 2020 Cassandra Kobayashi and Michael Zendejas
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-## Project Status
-
-Completed for CSUF CPSC 386-01 Summer 2020

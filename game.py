@@ -14,9 +14,6 @@ def clearSprites():
     walls.clear(screen, background)
     pygame.display.flip()
 
-
-
-
 # Player Class
 class Dino(pygame.sprite.Sprite):
     def __init__(self, pos, maze):
@@ -101,7 +98,6 @@ class Mushroom(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(self.image, self.rect)
 
-
 class Wall(pygame.sprite.Sprite):
     # Wall thickness
     def __init__(self, pos):
@@ -109,13 +105,9 @@ class Wall(pygame.sprite.Sprite):
         # bounds.append(self)
         self.rect = pygame.Rect(pos[0], pos[1], TS, TS)
         self.image = block
-        
 
     def draw(self):
         screen.blit(self.image, self.rect)
-
-        
-
 
 # function to show the score during the game and at the end
 def showScore(first=1):
@@ -132,7 +124,6 @@ def showScore(first=1):
     else:
         Score_rect2.center = (WIDTH//2, HEIGHT//2+TS*4)
         screen.blit(Ssurf2, Score_rect2)
-
 
 def showScoreP2(first=1):
     Score = pygame.font.SysFont('roboto', 50)
@@ -165,7 +156,6 @@ def gameOver():
     pygame.display.flip()
     time.sleep(5)
 
-
 # function to show the winner screen and score
 def winner():
     screen.fill(black)
@@ -174,7 +164,6 @@ def winner():
     showScore(0)
     pygame.display.flip()
     time.sleep(5)
-
 
 # function to show the Instruction page 2 of 3
 def instructions():
@@ -296,7 +285,6 @@ def gameloop(ran):
             gameOver()
             running = False
             
-
         pygame.display.flip()
 
         playerPC.move_counter += 1
@@ -381,7 +369,6 @@ def gameloop(ran):
                 clearSprites()
                 running = False
                 
-                
             if player.rect.colliderect(final_mushroom) and SCORE < 5:
                 gameOver()
                 clearSprites()
@@ -399,7 +386,6 @@ def gameloop(ran):
                 return True
     # print("Now Outside of Game")
     return False
-
 
 quitting = False
 while quitting == False:
@@ -422,7 +408,6 @@ while quitting == False:
     SCORE = 0
     SCOREP2 = 0
     
-
     # creates the maze
     # Parse the maze. B = wall, F = exit, M = mushrooms
     x = y = 0
