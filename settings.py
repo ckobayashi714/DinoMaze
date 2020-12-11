@@ -97,28 +97,28 @@ pressSB_rect = pressSB.get_rect(center=(WIDTH//2, TS*15))
 
 ########################################## Instruction Page Images 
 instructionspg = pygame.image.load('sprites/gameinst.png')
-instructionspg_rect = instructionspg.get_rect(midtop=(WIDTH//2, 0))
+instructionspg_rect = instructionspg.get_rect(midtop=(WIDTH//2, TS))
 
 rules = pygame.image.load('sprites/keys/help.png')
 rules_rect = rules.get_rect(midtop=(WIDTH//2 , TS*4 + 50))
 
 move = pygame.image.load('sprites/keys/move.png')
-move_rect = move.get_rect(center=(WIDTH//2, HEIGHT//2))
+move_rect = move.get_rect(center=(WIDTH//2, HEIGHT//2 - TS))
 
 arrows = pygame.image.load('sprites/keys/arrows.png')
 arrows = pygame.transform.scale(arrows, (225, 150))
-arrows_rect = arrows.get_rect(midright=(WIDTH//2, HEIGHT//2+TS*3))
+arrows_rect = arrows.get_rect(midright=(WIDTH//2, HEIGHT//2+TS*4))
 
 wasd = pygame.image.load('sprites/keys/wasd.png')
 wasd = pygame.transform.scale(wasd, (225, 150))
-wasd_rect = wasd.get_rect(midleft=(WIDTH//2, HEIGHT//2+TS*3))
+wasd_rect = wasd.get_rect(midleft=(WIDTH//2, HEIGHT//2+TS*4))
 
 # enterkey = pygame.image.load('sprites/keys/enter.png')
 # enterkey = pygame.transform.scale(enterkey, (250, 200))
 # enterkey_rect = enterkey.get_rect(topleft=(WIDTH//2+TS*4, TS*16))
 
 startenter = pygame.image.load('sprites/keys/enterStart.png')
-startenter_rect = startenter.get_rect(topleft=(TS*2 + 300, TS*19))
+startenter_rect = startenter.get_rect(center=(WIDTH//2, HEIGHT//2+(TS*10)))
 
 ########################################## Maze for player to beat
 # Creates Random mazes 
