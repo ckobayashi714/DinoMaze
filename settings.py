@@ -135,7 +135,7 @@ def generateFilledMaze(rows, cols):
 # Depth-First-Search Maze Algorithm
 # Random spot is chosen on the board and recursion is used to create the random maze
 def createMaze(maze): 
-    count = 20   
+    count = 25   
     start_row = (random.randint(0, (len(maze) - 3)//2)) * 2 + 1
     start_col = (random.randint(0, (len(maze[start_row]) - 3)//2)) * 2 + 1
     maze[start_row][start_col] = " "
@@ -153,7 +153,7 @@ def createMaze(maze):
                     walls += 1
                 if maze[row][col-1]  == 'B':
                     walls += 1
-                if walls == 3 and count >= 1:  # this will add 20 Mushrooms to maze
+                if walls == 3 and count >= 1:  # this will add 25 Mushrooms to maze
                     maze[row][col] = 'M'
                     count -= 1
 
@@ -184,7 +184,7 @@ def printMaze(maze):
     for row in range(0, len(maze)):
         print(maze[row])
 
-#function that randomizes the maze exit location and makes sure there is no wall next to exit 
+#function that randomizes the maze exit location and makes sure there is no wall or mushroom next to exit 
 def finalizeMaze(source_maze):
     rad = random.randint(0, (len(source_maze)- 2)) # row between 0 -> 23
     # print("random row", rad)
@@ -351,17 +351,17 @@ def findMushroom(row, col, maze):
 
 ########################################### Unused Functions
 # To help draw on screen
-screen = pygame.display.set_mode((size))
-TILESIZE = 32
-GRIDWIDTH = WIDTH / TILESIZE
-GRIDHEIGHT = HEIGHT / TILESIZE
-lightgrey = pygame.Color(100, 100, 100)
-darkgrey = pygame.Color(40, 40, 40)
-def draw_grid():
-    for x in range(0, WIDTH, TILESIZE):
-        pygame.draw.line(screen, black, (x, 0), (x, HEIGHT))
-    for y in range(0, HEIGHT, TILESIZE):
-        pygame.draw.line(screen, black, (0, y), (WIDTH, y))
+# screen = pygame.display.set_mode((size))
+# TILESIZE = 32
+# GRIDWIDTH = WIDTH / TILESIZE
+# GRIDHEIGHT = HEIGHT / TILESIZE
+# lightgrey = pygame.Color(100, 100, 100)
+# darkgrey = pygame.Color(40, 40, 40)
+# def draw_grid():
+#     for x in range(0, WIDTH, TILESIZE):
+#         pygame.draw.line(screen, black, (x, 0), (x, HEIGHT))
+#     for y in range(0, HEIGHT, TILESIZE):
+#         pygame.draw.line(screen, black, (0, y), (WIDTH, y))
 
 ########################################### Trying to make an easter egg (unsuccessful)
 # def credits(credit):
