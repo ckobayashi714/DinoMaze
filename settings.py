@@ -29,11 +29,6 @@ green = pygame.Color(0, 255, 0)
 purple = pygame.Color(143, 0, 255)
 
 
-# For the while loop
-# instruct = True
-# credit = True
-# intro = True
-
 ########################################### Background Images
 background = pygame.image.load('sprites/background/backg.png')
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
@@ -42,28 +37,28 @@ background_rect = background.get_rect(topleft=(0,0))
 ########################################### Game Music
 pygame.mixer.init()
 pygame.mixer.music.load('music_and_sounds/intro.wav')
-pygame.mixer.music.set_volume(0)
+pygame.mixer.music.set_volume(0.5)
 #0.5
-pygame.mixer.music.play(0)
+pygame.mixer.music.play(-1)
 #-1
 
 ########################################### Game Sound FX
 collect = pygame.mixer.Sound('music_and_sounds/collect.wav')
-collect.set_volume(0)
+collect.set_volume(0.2)
 #0.2 all
 
 button = pygame.mixer.Sound('music_and_sounds/button.wav')
-button.set_volume(0)
+button.set_volume(0.2)
 
 walk = pygame.mixer.Sound('music_and_sounds/jump.wav')
-walk.set_volume(0)
+walk.set_volume(0.05)
 #0.05
 
 gamewin = pygame.mixer.Sound('music_and_sounds/gamewin.wav')
-gamewin.set_volume(0)
+gamewin.set_volume(0.2)
 
 gameover = pygame.mixer.Sound('music_and_sounds/gameover.wav')
-gameover.set_volume(0)
+gameover.set_volume(0.2)
 
 ########################################### Dino player Sprite
 dinoimg = pygame.image.load('sprites/dino/dino.png')
@@ -199,6 +194,8 @@ def finalizeMaze(source_maze):
             if source_maze[1][len(source_maze[1]) - 2] == "M":
                 source_maze[1][len(source_maze[1]) - 2] = " "      
     else:
+        if source_maze[1][len(source_maze[1]) - 2] == "M":
+                source_maze[1][len(source_maze[1]) - 2] = " "
         source_maze[rad][len(source_maze[rad])-1] = "F"
 
     final_maze = []

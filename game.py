@@ -254,7 +254,7 @@ def gameloop(ran):
     running = True
     while running:
         # set the whole scene and board
-        screen.fill(lightgrey)
+        screen.fill(white)
         # screen.blit(background, background_rect)
         # draw_grid()
         # create the maze and mushrooms on the screen   
@@ -398,7 +398,7 @@ while quitting == False:
     maze = generateFilledMaze(25, 33)
     createMaze(maze)
     maze = finalizeMaze(maze)
-    printMaze(maze)
+    # printMaze(maze)
 
     player = Dino((TS, TS), maze)
     dinos.add(player)
