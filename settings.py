@@ -8,7 +8,7 @@ import pygame
 
 # Global Variables
 #old 1056,800
-size = WIDTH, HEIGHT = 1056,800
+size = WIDTH, HEIGHT = 1120,864
 TS = 32
 dino_size = D_WIDTH, D_HEIGHT = TS, TS
 TITLE = 'DINO MAZE'
@@ -37,28 +37,31 @@ background_rect = background.get_rect(topleft=(0,0))
 ########################################### Game Music
 pygame.mixer.init()
 pygame.mixer.music.load('music_and_sounds/intro.wav')
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.set_volume(0.05)
 #0.5
 pygame.mixer.music.play(-1)
 #-1
 
 ########################################### Game Sound FX
 collect = pygame.mixer.Sound('music_and_sounds/collect.wav')
-collect.set_volume(0.2)
+collect.set_volume(0.02)
 #0.2 all
 
+enemyCollect = pygame.mixer.Sound('music_and_sounds/enemycollect.wav')
+enemyCollect.set_volume(0.02)
+
 button = pygame.mixer.Sound('music_and_sounds/button.wav')
-button.set_volume(0.2)
+button.set_volume(0.02)
 
 walk = pygame.mixer.Sound('music_and_sounds/jump.wav')
 walk.set_volume(0.05)
 #0.05
 
 gamewin = pygame.mixer.Sound('music_and_sounds/gamewin.wav')
-gamewin.set_volume(0.2)
+gamewin.set_volume(0.02)
 
 gameover = pygame.mixer.Sound('music_and_sounds/gameover.wav')
-gameover.set_volume(0.2)
+gameover.set_volume(0.02)
 
 ########################################### Dino player Sprite
 dinoimg = pygame.image.load('sprites/dino/dino.png')
@@ -118,7 +121,6 @@ startenter = pygame.image.load('sprites/keys/enterStart.png')
 startenter_rect = startenter.get_rect(topleft=(TS*2 + 300, TS*19))
 
 ########################################## Maze for player to beat
-# Depth-First-Search Maze Algorithm
 # Creates Random mazes 
 # Creates a board filled all B's
 def generateFilledMaze(rows, cols):
@@ -130,8 +132,10 @@ def generateFilledMaze(rows, cols):
         maze.append(next_row)
     return maze
 
-# Random spot is chosen on the board recursion is used to create the maze
-def createMaze(maze):    
+# Depth-First-Search Maze Algorithm
+# Random spot is chosen on the board and recursion is used to create the random maze
+def createMaze(maze): 
+    count = 20   
     start_row = (random.randint(0, (len(maze) - 3)//2)) * 2 + 1
     start_col = (random.randint(0, (len(maze[start_row]) - 3)//2)) * 2 + 1
     maze[start_row][start_col] = " "
@@ -149,9 +153,9 @@ def createMaze(maze):
                     walls += 1
                 if maze[row][col-1]  == 'B':
                     walls += 1
-                if walls == 3:  # this will add Mushrooms to maze
-                    maze[row][col] = 'M' 
-
+                if walls == 3 and count >= 1:  # this will add 20 Mushrooms to maze
+                    maze[row][col] = 'M'
+                    count -= 1
 
 #Helper function recursion
 def createMazeHelper(maze, r, c):
@@ -180,7 +184,7 @@ def printMaze(maze):
     for row in range(0, len(maze)):
         print(maze[row])
 
-#function that randomizes the maze exit location
+#function that randomizes the maze exit location and makes sure there is no wall next to exit 
 def finalizeMaze(source_maze):
     rad = random.randint(0, (len(source_maze)- 2)) # row between 0 -> 23
     # print("random row", rad)

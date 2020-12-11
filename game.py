@@ -14,7 +14,7 @@ def clearSprites():
     walls.clear(screen, background)
     pygame.display.flip()
 
-# Player Class
+# Player Class Dino
 class Dino(pygame.sprite.Sprite):
     def __init__(self, pos, maze):
         super().__init__(dinos)
@@ -50,7 +50,7 @@ class Dino(pygame.sprite.Sprite):
             self.rect.x = self.col * TS
             self.rect.y = self.row * TS
 
-#Enemy class
+#Character Enemy class
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, maze):
         super().__init__(enemies)
@@ -109,7 +109,7 @@ class Wall(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(self.image, self.rect)
 
-# function to show the score during the game and at the end
+# function to show the score during the game and at the end for P1
 def showScore(first=1):
     Score = pygame.font.SysFont('roboto', 50)
     Ssurf = Score.render("P1 SCORE: {0}".format(SCORE), True, green)
@@ -125,6 +125,7 @@ def showScore(first=1):
         Score_rect2.center = (WIDTH//2, HEIGHT//2+TS*4)
         screen.blit(Ssurf2, Score_rect2)
 
+# function to show the score during the game and at the end for AI
 def showScoreP2(first=1):
     Score = pygame.font.SysFont('roboto', 50)
     Ssurf = Score.render("P2 SCORE: {0}".format(SCOREP2), True, yellow)
@@ -166,6 +167,7 @@ def winner():
     time.sleep(5)
 
 # function to show the Instruction page 2 of 3
+# AI difficulty levels 24  = EASY MODE, 16 = MEDIUM MODE, and 8 = HARD MODE
 def instructions():
     global ran
     instruct = True
@@ -173,28 +175,28 @@ def instructions():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == ord('e'):
-                    ran = 50
+                    ran = 24
                     button.play()
                     instruct = False
                     break
                     gameloop(ran)
 
                 if event.key == ord('m'):
-                    ran = 25
+                    ran = 16
                     button.play()
                     instruct = False
                     break
                     gameloop(ran)
 
                 if event.key == ord('h'):
-                    ran = 1
+                    ran = 8
                     button.play()
                     instruct = False
                     break
                     gameloop(ran)
 
                 if event.key == pygame.K_RETURN:
-                    ran = 1
+                    ran = 16
                     button.play()
                     instruct = False
                     break
@@ -260,7 +262,7 @@ def gameloop(ran):
         # create the maze and mushrooms on the screen   
         # for bound in bounds:
         #     pygame.draw.rect(screen, (black), bound.rect)
-        pygame.draw.rect(screen, (purple), final_mushroom)
+        pygame.draw.rect(screen, (blue), final_mushroom)
         pygame.draw.rect(screen, (yellow), final_mushroom, 4)
         # draw the players, mushrooms, and baddies
         dinos.draw(screen)
@@ -281,12 +283,12 @@ def gameloop(ran):
         milliseconds += clock.tick_busy_loop(60)
         # player loses if timer reaches 0
         if minutes == 0 and seconds == 0:
+            running = False
             clearSprites()
             gameOver()
-            running = False
             
         pygame.display.flip()
-
+        
         playerPC.move_counter += 1
         roll = random.randint(0, playerPC.move_counter)
         # print(playerPC.move_counter)
@@ -318,17 +320,22 @@ def gameloop(ran):
                 # walk.play()
                 playerPC.move(0, -1)
             
+            ## Will remove/clear mushrooms from the board. Collect and increase score for AI
             if maze[playerPC.row][playerPC.col] == "M":
                 maze[playerPC.row] = maze[playerPC.row][0: playerPC.col] + \
                     " " + maze[playerPC.row][playerPC.col + 1: ]
                 pygame.sprite.groupcollide(enemies, mushrooms, False, True)
+                enemyCollect.play()
                 SCOREP2 += 1
+                # print("AI COLLECTED MUSHROOM!")
             
+            #if AI collides with player, player loses and game over
             if playerPC.rect.colliderect(player.rect):
+                running = False
                 gameOver()
                 clearSprites()
-                running = False
-    
+                
+        #move the player with up down aswd keys
         for event in pygame.event.get():            
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -364,42 +371,46 @@ def gameloop(ran):
                 SCORE += 1
 
             # When Dino reaches the exit they win if collected more mushrooms than Enemy, lose if not.         
-            if player.rect.colliderect(final_mushroom) and SCORE >= 5:
+            if player.rect.colliderect(final_mushroom) and SCORE > SCOREP2:
+                running = False
                 winner()
                 clearSprites()
-                running = False
                 
-            if player.rect.colliderect(final_mushroom) and SCORE < 5:
+            if player.rect.colliderect(final_mushroom) and SCORE < SCOREP2:
+                running = False
                 gameOver()
                 clearSprites()
-                running = False
             
+            #if player collides with enemy player loses                
             if player.rect.colliderect(playerPC.rect):
+                running = False
                 gameOver()
                 clearSprites()
-                running = False
                 
             if event.type == pygame.QUIT:
+                running = False
                 clearSprites()
-                running = False            
-                pygame.quit()
+                # pygame.quit()
                 return True
     # print("Now Outside of Game")
     return False
 
+#playing again after a win or loss
 quitting = False
 while quitting == False:
-    # creates the player
+    # creates the sprite groups
     dinos = pygame.sprite.Group()
     enemies = pygame.sprite.Group()
     mushrooms = pygame.sprite.Group()
     walls = pygame.sprite.Group()
 
-    maze = generateFilledMaze(25, 33)
+    #generate the random maze
+    maze = generateFilledMaze(27, 35)
     createMaze(maze)
     maze = finalizeMaze(maze)
     # printMaze(maze)
-
+    
+    #creates the players and mushrooms
     player = Dino((TS, TS), maze)
     dinos.add(player)
     playerPC = Enemy((TS, TS), maze)

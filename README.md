@@ -43,3 +43,4 @@ __Music and Sound FX__
 + Jumping SFX by Lefty_Studios licensed by CC0 1.0, https://freesound.org/people/Lefty_Studios/sounds/369515/, retrieved on June 15, 2020, freesound.org
 + Jingle Achievement by LittleRobotSoundFactory licensed CC BY 3.0, https://freesound.org/people/LittleRobotSoundFactory/sounds/270331/, retrieved on June 15, 2020, freesound.org
 + Arcade Game Over by ScreamStudio licensed by CC0 1.0, https://freesound.org/people/ScreamStudio/sounds/412168/, retrieved on June 15, 2020, freesound.org
++ 8-Bit Coin by TheDweebMan licensed by CC0 1.0. https://https://freesound.org/people/TheDweebMan/sounds/277215/, retrived on Dec 2, 2020, freesound.org
