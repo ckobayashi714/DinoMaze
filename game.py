@@ -189,14 +189,14 @@ def instructions():
                     gameloop(ran)
 
                 if event.key == ord('h'):
-                    ran = 8
+                    ran = 1
                     button.play()
                     instruct = False
                     break
                     gameloop(ran)
 
                 if event.key == pygame.K_RETURN:
-                    ran = 16
+                    ran = 8
                     button.play()
                     instruct = False
                     break
