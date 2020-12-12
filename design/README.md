@@ -2,15 +2,15 @@
 
 ## Story
 
-The story takes place during the era of dinosaurs. You, the player, are a dinosaur named Dino who has set out on a quest to save the planet from being destroyed. You are tasked to collect mushrooms when you collect enough of them you're able to summon aliens who will help you on your quest.
+The story takes place during the era of dinosaurs. The player is a green dinosaur who has set out on a quest to save the planet from being destroyed. You are tasked to collect more mushrooms than your opponent; once you've done that, exit the maze before the timer runs out or before the opponent catches up to you.
 
 ## The problem at hand
 
-You must not let the clock run out. Otherwise, you die, and the planet gets destroyed. You need to have collected at least 5 mushrooms before you can exit the maze.
+You must not let the clock run out, and you must collect more than your opponent to exit the maze freely; otherwise, you lose. You must not let your opponent catch up to you before you exit the maze.
 
 ## What will be incorporated
 
-I will use sprites with images of dinosaurs and background images that match the period. I will incorporate images, music, and sound effects. I will use a timer to keep track of the player's progress.
+We will use sprites with images of dinosaurs and background images that match the period. We will incorporate images, music, and sound effects and use a timer and score card to keep track of the player's progress and how many mushrooms each has collected.
 
 ![Design Rules](/design/rules.png)
 
@@ -28,7 +28,7 @@ I will use sprites with images of dinosaurs and background images that match the
 
 ![Backstory](/design/backstory.png)
 
-## Changes to game
+## Artificial Intelligence added to Game
 
-+ I wanted to incorporate AI into this game so the DINO could play against an enemy, but I was unable to implement it due to time constraints.
-+ I couldn't figure how to use an algorithm on this game; I wanted to create multiple levels so there would be a feeling of randomization each time a player would press start. It wasn't easy to do, so the idea got scrapped.
++ So the green dino could play against an opponent, we incorporated Artificial Intelligence into this game by implementing the blue dino with a BFS Breadth-First Search function called findPlayer and findMushroom. We added 3 levels of difficulty: Easy, Medium, and Hard. This will change how fast the AI takes his next step.
++ We created the illusion of multiple levels by randomizing each maze's creation at the start of each game. We implemented this using the DFS Depth-First Search function called createMaze and finalizeMaze
